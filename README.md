@@ -1,13 +1,17 @@
 # Ikman React App ekak 🤠
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-> Note that this App uses `react-app-rewired` and `customize-cra` to configure the webpack without ejecting\
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) (Ts).
+> Note that this App uses [`react-app-rewired`](https://www.npmjs.com/package/react-app-rewired) and [`customize-cra`](https://www.npmjs.com/package/customize-cra) to configure the webpack without ejecting\
 react-scripts
+## How to Use ?
+- Clone it.
+- `npm i` it.
+- `npm start` it.
 ## Available Packages/Features
 Following packages are configured in `config-overrides.js`.Just clone and do your Magic 🍄
 - TailWindCSS [https://tailwindcss.com/](https://tailwindcss.com/)
-- react-redux
-- redux-toolkit
+- react-redux [https://react-redux.js.org/](https://react-redux.js.org/)
+- redux-toolkit [https://redux-toolkit.js.org/](https://redux-toolkit.js.org/)
 - ant design [https://ant.design/](https://ant.design/)
 - react-hotReload [https://www.npmjs.com/package/react-hot-loader](https://www.npmjs.com/package/react-hot-loader)
 
