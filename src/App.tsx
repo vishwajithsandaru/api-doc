@@ -1,10 +1,11 @@
 import React from "react";
 import logo from "./logo.svg";
-import "./App.css";
 import { Breadcrumb, DatePicker } from "antd";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/storeConfig";
+import "./App.less";
+import "./App.css";
 
 function App() {
   const dispatch = useDispatch();
