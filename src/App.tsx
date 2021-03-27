@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import { Breadcrumb, DatePicker, Input, Tree } from "antd";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+
+import { Input, Tree } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/storeConfig";
 import "./App.less";
 import "./App.css";
 import Layout, { Content } from "antd/lib/layout/layout";
-import { converter } from "widdershins";
-import axios from "axios";
-import fs from "fs";
-import { SwaggerType } from "./models/swagger";
-import { SwaggerObj } from "./models/sample";
+
+import { Definitions, Paths, SwaggerType } from "./models/swagger";
+
 export interface TreeItem {
   title: string;
   key: string;
+  checkable?:boolean,
   children?: TreeItem[];
 }
 function App() {
-  const [treeData, setTreeData] = useState<TreeItem[] | null>(null);
+  const [endPointTreeData, setEndPointTreeData] = useState<TreeItem[] | null>(null);
+  const [definitionTreeData, setDefinitionTreeData] = useState<TreeItem[] | null>(null);
 
   const [jsonObject, setJsonObject] = useState<SwaggerType | null>(null);
+  const [selectedPaths,setSelectedPaths] = useState<Paths|null>(null);
+  const [selectedDefinitions,setSelectedDefinitions] = useState<Definitions|null>(null);
 
   useEffect(() => {
     let options = { codeSamples: true };
@@ -36,18 +37,28 @@ function App() {
     const doThis = async () => {};
     doThis();
 
-    let tree: TreeItem[] = [];
+    let endPointTree: TreeItem[] = [];
+    let definitionTree :TreeItem[]=[];
     if (jsonObject) {
       for (const [pathKey, path] of Object.entries(jsonObject.paths)) {
         let itemChild: TreeItem[] = [];
         for (const [key, leaf] of Object.entries(path)) {
-          itemChild.push({ key: `${pathKey}/${key}`, title: key });
+          itemChild.push({ key: `${pathKey}///${key}`, title: key });
         }
-        tree.push({ key: pathKey, title: pathKey, children: itemChild });
+        endPointTree.push({ key: pathKey, title: pathKey, children: itemChild });
       }
-    }
 
-    setTreeData(tree);
+      console.log(jsonObject);
+      if(jsonObject.definitions){
+        for (const [definitionKey, value] of Object.entries(jsonObject.definitions)) {
+          definitionTree.push({key:definitionKey,title:definitionKey});
+        }
+        
+        
+      }
+      setDefinitionTreeData(definitionTree);
+      setEndPointTreeData(endPointTree);
+    }
 
     if (jsonObject != null) {
       // converter
@@ -59,11 +70,32 @@ function App() {
     }
   }, [jsonObject]);
 
-  const readSwagger = (obj: SwaggerType) => {};
 
-  const onCheck = (checkedkey: any) => {
-    console.log("fooooooo", checkedkey);
+
+  const onEndPointCheck = (checkedkeys: any) => {
+    console.log(checkedkeys);
+
+    let selectedTemp:Paths={};
+    for (const key of checkedkeys) {
+      const [basePath,method] = (key as string).split('///');
+      if(method){
+        selectedTemp={...selectedTemp,[basePath]:{
+          ...selectedTemp[basePath],
+          [method]:{...(jsonObject?.paths[basePath][method])}
+          }}
+      }
+    }
+
+    setSelectedPaths(selectedTemp)
   };
+
+  const onDefinitionCheck=(checkedKey:any)=>{
+    let tempSelected = {};
+    for (const key of checkedKey ) {
+        tempSelected={...tempSelected,[key]:jsonObject?.definitions[key]}
+    }
+    setSelectedDefinitions(tempSelected);
+  }
 
   const fileReader = new FileReader();
 
@@ -88,16 +120,31 @@ function App() {
         <Input type="text"></Input>
 
         <Content>
-          <div>dfdsfdsf</div>
-          {treeData && (
+        
+          {endPointTreeData && (
             <Tree
-              checkStrictly
+              // checkStrictly
               checkable
-              treeData={treeData}
-              onCheck={onCheck}
+              treeData={endPointTreeData}
+              onCheck={onEndPointCheck}
             ></Tree>
           )}
-        </Content>
+
+
+</Content>
+<Content className="p-10">
+          {
+            definitionTreeData && (
+              <Tree
+              // checkStrictly
+              checkable
+              treeData={definitionTreeData}
+              onCheck={onDefinitionCheck}
+            ></Tree>
+            )
+          }
+
+</Content>
       </Content>
     </Layout>
   );
