@@ -14,7 +14,7 @@ function App() {
   return (
     <Layout>
       <Content className="w-50 p-10">
-        <Input type="text"></Input>
+        <Input  type="text"></Input>
       </Content>
     </Layout>
   );
