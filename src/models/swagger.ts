@@ -22,9 +22,7 @@ export interface Tag {
 
 export interface Paths {
     [key : string]:{
-        post?:any,
-        put?:any,
-        get?:any,  
+        [key:string]:any  
     }
 }
 
