@@ -79,7 +79,10 @@ function App() {
 
   const onClickDownload = async () => {
     try{
-      res = await Axios.post('/api/doc', jsonObject, {
+
+      let obj = JSON.stringify({...jsonObject, paths: selectedPaths, definitions: selectedDefinitions})
+
+      res = await Axios.post('/api/doc', obj, {
         headers:{
           'Content-Type': 'application/json'
         }
