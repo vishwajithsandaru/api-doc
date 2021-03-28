@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-
 import { Button, Input, Tree } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./store/storeConfig";
 import "./App.less";
 import "./App.css";
 import Layout, { Content } from "antd/lib/layout/layout";
+import Axios from 'axios';
 
 import {
   Definitions,
@@ -14,9 +12,6 @@ import {
   Options,
   Tag,
 } from "./models/swagger";
-import * as dots from "dot";
-
-const converter = require("widdershins");
 
 // const dots = require("dot").process({ path: "./view"});
 
@@ -51,6 +46,8 @@ function App() {
     elem.click();
   };
 
+  let res: any = null;
+
   useEffect(() => {
     let endPointTree: TreeItem[] = [];
     let definitionTree: TreeItem[] = [];
@@ -80,21 +77,17 @@ function App() {
     }
   }, [jsonObject]);
 
-  const onClickDownload = () => {
-    let options: Options = {
-      codeSamples: false,
-    }; // defaults shown
-
-    console.log(dots.process);
-    if (jsonObject != null) {
-      converter
-        .convert(jsonObject, options)
-        .then((md: any) => {
-          console.log(md);
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
+  const onClickDownload = async () => {
+    try{
+      res = await Axios.post('/api/doc', jsonObject, {
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      });
+      // console.log(res.data.markdownOutput)
+      downloadMd(res.data.markdownOutput);
+    }catch(e){
+      console.log(e);
     }
   };
 

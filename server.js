@@ -19,6 +19,7 @@ app.post('/api/doc', (req, res) => {
         res.send({ markdownOutput });
     })
     .catch(err => {
+        res.send(`err: ${err}`);
     });
 });
 
