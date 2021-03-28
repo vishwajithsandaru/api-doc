@@ -27,18 +27,17 @@ export interface Paths {
 }
 
 export interface Options {
-    "codeSamples" = true;
-    "httpsnippet" = false;
-    templateCallback = function(templateName,stage,data) { return data };
-    theme = 'darkula';
-    search = true;
-    sample = true; // set false by --raw
-    discovery = false;
-    includes = [];
-    shallowSchemas = false;
-    tocSummary = false;
-    headings = 2;
-    options.yaml = false;
+    codeSamples?: boolean,
+    httpsnippet? :  boolean,
+    templateCallback?: any,
+    theme?: string,
+    search?: boolean,
+    sample?: boolean,
+    discovery?: boolean,
+    includes? : [],
+    shallowSchemas? : boolean,
+    tocSummary? : boolean,
+    headings? : boolean
 }
 
 export interface Definitions{

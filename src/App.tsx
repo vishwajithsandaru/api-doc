@@ -7,9 +7,13 @@ import "./App.less";
 import "./App.css";
 import Layout, { Content } from "antd/lib/layout/layout";
 
-import { Definitions, Paths, SwaggerType } from "./models/swagger";
+import { Definitions, Paths, SwaggerType, Options } from "./models/swagger";
+import * as dots from "dot";
 
 const converter = require('widdershins');
+
+// const dots = require("dot").process({ path: "./view"});
+
 
 export interface TreeItem {
   title: string;
@@ -65,9 +69,12 @@ function App() {
 
   const onClickDownload = () => {
 
-    let options = {}; // defaults shown
+    let options: Options = {
+      codeSamples: false,
+    } // defaults shown
 
-
+    
+    console.log(dots.process);
     if (jsonObject != null) {
       converter
         .convert(jsonObject, options)
