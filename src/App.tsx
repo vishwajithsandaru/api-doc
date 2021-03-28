@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 
-import { Input, Tree } from "antd";
+import { Button, Input, Tree } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/storeConfig";
 import "./App.less";
 import "./App.css";
 import Layout, { Content } from "antd/lib/layout/layout";
 
-import { Definitions, Paths, SwaggerType, Options, Tag} from "./models/swagger";
+import {
+  Definitions,
+  Paths,
+  SwaggerType,
+  Options,
+  Tag,
+} from "./models/swagger";
 import * as dots from "dot";
 
-const converter = require('widdershins');
+const converter = require("widdershins");
 
 // const dots = require("dot").process({ path: "./view"});
-
 
 export interface TreeItem {
   title: string;
@@ -47,7 +52,6 @@ function App() {
   };
 
   useEffect(() => {
-
     let endPointTree: TreeItem[] = [];
     let definitionTree: TreeItem[] = [];
     if (jsonObject) {
@@ -74,16 +78,13 @@ function App() {
       setDefinitionTreeData(definitionTree);
       setEndPointTreeData(endPointTree);
     }
-
   }, [jsonObject]);
 
   const onClickDownload = () => {
-
     let options: Options = {
       codeSamples: false,
-    } // defaults shown
+    }; // defaults shown
 
-    
     console.log(dots.process);
     if (jsonObject != null) {
       converter
@@ -95,7 +96,7 @@ function App() {
           console.log(err);
         });
     }
-  }
+  };
 
   const onEndPointCheck = (checkedkeys: any) => {
     console.log(checkedkeys);
@@ -156,9 +157,16 @@ function App() {
   return (
     <Layout>
       <Content className="w-50 p-10">
-        <input type="file" onChange={(e) => fileChange(e.target.files)} />
-        <Input type="text"></Input>
-        <Input type="button" onClick={()=>{onClickDownload()}}></Input>
+        <Input type="file" onChange={(e) => fileChange(e.target.files)} />
+        <Button
+          onClick={() => {
+            onClickDownload();
+          }}
+          type="primary"
+          title="Download"
+        >
+          Download File
+        </Button>
         <Content>
           {endPointTreeData && (
             <Tree
