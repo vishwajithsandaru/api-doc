@@ -7,7 +7,7 @@ import "./App.less";
 import "./App.css";
 import Layout, { Content } from "antd/lib/layout/layout";
 
-import { Definitions, Paths, SwaggerType } from "./models/swagger";
+import { Definitions, Paths, SwaggerType, Tag } from "./models/swagger";
 
 export interface TreeItem {
   title: string;
@@ -30,6 +30,8 @@ function App() {
     setSelectedDefinitions,
   ] = useState<Definitions | null>(null);
 
+  const [newTags, setNewTags] = useState<Tag[]>();
+
   useEffect(() => {
     let options = { codeSamples: true };
 
@@ -40,9 +42,6 @@ function App() {
       elem.download = "api-doc.md";
       elem.click();
     };
-
-    const doThis = async () => {};
-    doThis();
 
     let endPointTree: TreeItem[] = [];
     let definitionTree: TreeItem[] = [];
@@ -85,6 +84,7 @@ function App() {
     console.log(checkedkeys);
 
     let selectedTemp: Paths = {};
+    let selectedTags = new Set();
     for (const key of checkedkeys) {
       const [basePath, method] = (key as string).split("///");
       if (method) {
@@ -95,12 +95,25 @@ function App() {
             [method]: { ...jsonObject?.paths[basePath][method] },
           },
         };
+
+        (jsonObject?.paths[basePath][method].tags as string[]).forEach((el) =>
+          selectedTags.add(el)
+        );
       }
     }
-
+    // console.log("selected tags", selectedTags);
+    // setNewTags();
     setSelectedPaths(selectedTemp);
   };
 
+  useEffect(() => {
+    console.log("final Object >>>>", {
+      ...jsonObject,
+      tags: [],
+      paths: selectedPaths,
+      definitions: selectedDefinitions,
+    });
+  }, [selectedPaths, selectedDefinitions]);
   const onDefinitionCheck = (checkedKey: any) => {
     let tempSelected = {};
     for (const key of checkedKey) {
@@ -123,8 +136,6 @@ function App() {
     fileReader.readAsText(file[0]);
   };
 
-  const dispatch = useDispatch();
-  const isLoading = useSelector((state: RootState) => state.isLoading);
   return (
     <Layout>
       <Content className="w-50 p-10">
