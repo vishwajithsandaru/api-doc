@@ -7,11 +7,11 @@ import { RootState } from "./store/storeConfig";
 import "./App.less";
 import "./App.css";
 import Layout, { Content } from "antd/lib/layout/layout";
-import { converter } from "widdershins";
 import axios from "axios";
 import fs from "fs";
 import { SwaggerType } from "./models/swagger";
 import { SwaggerObj } from "./models/sample";
+const converter = require('widdershins');
 export interface TreeItem {
   title: string;
   key: string;
@@ -22,16 +22,15 @@ function App() {
 
   const [jsonObject, setJsonObject] = useState<SwaggerType | null>(null);
 
-  useEffect(() => {
-    let options = { codeSamples: true };
+  const downloadMd = (str: string) => {
+    const elem = document.createElement("a");
+    const file = new Blob([str], { type: "text/plain;charset=utf-8" });
+    elem.href = URL.createObjectURL(file);
+    elem.download = "api-doc.md";
+    elem.click();
+  };
 
-    const downloadMd = (str: string) => {
-      const elem = document.createElement("a");
-      const file = new Blob([str], { type: "text/plain;charset=utf-8" });
-      elem.href = URL.createObjectURL(file);
-      elem.download = "api-doc.md";
-      elem.click();
-    };
+  useEffect(() => {
 
     const doThis = async () => {};
     doThis();
@@ -49,15 +48,24 @@ function App() {
 
     setTreeData(tree);
 
-    if (jsonObject != null) {
-      // converter
-      //   .convert(jsonObject, options)
-      //   .then((md: any) => {})
-      //   .catch((err: any) => {
-      //     console.log(err);
-      //   });
-    }
   }, [jsonObject]);
+
+  const onClickDownload = () => {
+
+    let options = {}; // defaults shown
+
+
+    if (jsonObject != null) {
+      converter
+        .convert(jsonObject, options)
+        .then((md: any) => {
+          console.log(md);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    }
+  }
 
   const readSwagger = (obj: SwaggerType) => {};
 
@@ -86,7 +94,7 @@ function App() {
       <Content className="w-50 p-10">
         <input type="file" onChange={(e) => fileChange(e.target.files)} />
         <Input type="text"></Input>
-
+        <Input type="button" onClick={()=>{onClickDownload()}}></Input>
         <Content>
           <div>dfdsfdsf</div>
           {treeData && (
